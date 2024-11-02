@@ -114,6 +114,13 @@ app.get('/sensors', async (req, res) => {
   }
 });
 
+sequelize.authenticate()
+  .then(() => console.log('Conectado a PostgreSQL'))
+  .catch(err => {
+    console.error('Error al conectar a PostgreSQL:', err);
+    process.exit(1); // Termina el proceso si no puede conectarse
+  });
+
 // Inicia el servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);

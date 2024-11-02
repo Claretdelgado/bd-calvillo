@@ -8,7 +8,7 @@ services:
     startCommand: npm start
     envVars:
       - key: DATABASE_URL
-        value: postgresql://dbcalv_user:uJq8wz818Ohe9F38vdE59YpRjMVSezLN@dpg-csj77ca3esus7381h7o0-a.oregon-postgres.render.com/dbcalv
+        value: postgresql://dbcalv_user:uJq8wz818Ohe9F38vdE59YpRjMVSezLN@dpg-csj77ca3esus7381h7o0-a.oregon-postgres.render.com:5432/dbcalv
       - key: PORT
         value: "5000"
       - key: JWT_SECRET
