@@ -1,12 +1,16 @@
+version: 1
 services:
   - type: web
-    name: bdsensores-app
+    name: bdcalv-service
     env: node
     plan: free
-    buildCommand: "npm install"
-    startCommand: "node server.js"
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
-      - key: MONGODB_URI
-        sync: false  # Define la variable en el panel de Render y no en el código para mayor seguridad.
+      - key: DATABASE_URL
+        value: postgresql://dbcalv_user:uJq8wz818Ohe9F38vdE59YpRjMVSezLN@dpg-csj77ca3esus7381h7o0-a.oregon-postgres.render.com/dbcalv
       - key: PORT
         value: "5000"
+      - key: JWT_SECRET
+        value: Sisters5
+    autoDeploy: true
