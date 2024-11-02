@@ -10,10 +10,13 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Conexión a PostgreSQL usando Sequelize
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
+  dialectOptions: {
+    connectTimeout: 60000 // 60 segundos
+  }
 });
+
 
 // Verificación de la conexión
 sequelize.authenticate()
