@@ -18,7 +18,10 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 // Verificación de la conexión
 sequelize.authenticate()
   .then(() => console.log('Conectado a PostgreSQL'))
-  .catch(err => console.error('Error al conectar a PostgreSQL:', err));
+  .catch(err => {
+    console.error('Error al conectar a PostgreSQL:', err);
+    process.exit(1); // Termina el proceso si no puede conectarse
+  });
 
 // Modelo de datos para los sensores
 const SensorData = sequelize.define('SensorData', {
@@ -71,7 +74,7 @@ app.post('/register', async (req, res) => {
     res.status(201).json({ message: 'Usuario creado', userId: user.id });
   } catch (err) {
     console.error('Error al registrar usuario:', err);
-    res.status(500).send('Error al registrar usuario');
+    res.status(500).json({ error: 'Error al registrar usuario', details: err.message });
   }
 });
 
@@ -87,7 +90,7 @@ app.post('/login', async (req, res) => {
     res.json({ message: 'Inicio de sesión exitoso', token });
   } catch (err) {
     console.error('Error al iniciar sesión:', err);
-    res.status(500).send('Error al iniciar sesión');
+    res.status(500).json({ error: 'Error al iniciar sesión', details: err.message });
   }
 });
 
@@ -99,7 +102,7 @@ app.post('/submit', async (req, res) => {
     res.status(200).send('Datos recibidos correctamente');
   } catch (err) {
     console.error('Error al guardar los datos:', err);
-    res.status(500).send('Error al guardar los datos');
+    res.status(500).json({ error: 'Error al guardar los datos', details: err.message });
   }
 });
 
@@ -110,16 +113,16 @@ app.get('/sensors', async (req, res) => {
     res.status(200).json(sensors);
   } catch (err) {
     console.error('Error al obtener los datos:', err);
-    res.status(500).send('Error al obtener los datos');
+    res.status(500).json({ error: 'Error al obtener los datos', details: err.message });
   }
 });
 
-sequelize.authenticate()
-  .then(() => console.log('Conectado a PostgreSQL'))
-  .catch(err => {
-    console.error('Error al conectar a PostgreSQL:', err);
-    process.exit(1); // Termina el proceso si no puede conectarse
-  });
+// Cerrar la conexión al terminar el proceso
+process.on('SIGINT', async () => {
+  await sequelize.close();
+  console.log('Conexión a la base de datos cerrada');
+  process.exit(0);
+});
 
 // Inicia el servidor
 app.listen(PORT, () => {
